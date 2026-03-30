@@ -3,369 +3,527 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Information Form</title>
+  <title>Admin Dashboard</title>
   <style>
-    :root {
-      --primary-color: #3498db;
-      --primary-dark: #2980b9;
-      --success-color: #2ecc71;
-      --error-color: #e74c3c;
-      --light-gray: #f5f5f5;
-      --medium-gray: #ddd;
-      --dark-gray: #333;
-      --white: #fff;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--light-gray);
-      color: var(--dark-gray);
-      line-height: 1.6;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
     }
-
     .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: var(--white);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: var(--dark-gray);
-      margin-bottom: 30px;
-      font-size: 24px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--dark-gray);
-    }
-
-    .required:after {
-      content: " *";
-      color: var(--error-color);
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    input[type="tel"] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--medium-gray);
-      border-radius: 6px;
-      font-size: 16px;
-      transition: border-color 0.3s;
-    }
-
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="number"]:focus,
-    input[type="tel"]:focus {
-      border-color: var(--primary-color);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-    }
-
-    .photo-upload {
-      border: 2px dashed var(--medium-gray);
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 20px;
-      text-align: center;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-bottom: 15px;
     }
-
-    .photo-upload:hover {
-      border-color: var(--primary-color);
-      background-color: rgba(52, 152, 219, 0.05);
-    }
-
-    .photo-upload input[type="file"] {
-      display: none;
-    }
-
-    .photo-upload-label {
-      display: block;
-      cursor: pointer;
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .photo-preview {
-      margin-top: 15px;
-      text-align: center;
-      display: none;
-    }
-
-    .photo-preview img {
-      max-width: 200px;
-      max-height: 200px;
+    .login-container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
       border-radius: 8px;
-      border: 2px solid var(--medium-gray);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
-
-    .photo-instructions {
-      font-size: 14px;
-      color: #666;
-      margin-top: 5px;
+    .dashboard-container {
+      display: none;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-top: 20px;
     }
-
+    h1, h2 {
+      color: #333;
+    }
     button {
-      background-color: var(--primary-color);
-      color: var(--white);
+      background-color: #4285F4;
+      color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 16px;
+      margin: 10px 0;
+    }
+    button:hover {
+      background-color: #3367D6;
+    }
+    table {
       width: 100%;
-      transition: background-color 0.3s;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      margin-right: 5px;
+      font-size: 14px;
+    }
+    .edit-btn {
+      background-color: #FFC107;
+    }
+    .edit-btn:hover {
+      background-color: #FFB300;
+    }
+    .delete-btn {
+      background-color: #F44336;
+    }
+    .delete-btn:hover {
+      background-color: #D32F2F;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      display: none;
+    }
+    .success {
+      background-color: #dff0d8;
+      color: #3c763d;
+    }
+    .error {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+    #google-signin {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      color: #757575;
+      border: 1px solid #ddd;
+      padding: 10px 20px;
+    }
+    #google-signin img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+    .logout-btn {
+      background-color: #f44336;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .edit-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .edit-form input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .edit-actions {
+      display: flex;
+      gap: 10px;
       margin-top: 10px;
     }
-
-    button:hover {
-      background-color: var(--primary-dark);
-    }
-
-    button:disabled {
-      background-color: var(--medium-gray);
-      cursor: not-allowed;
-    }
-
-    #status {
-      margin: 20px 0;
-      padding: 15px;
-      border-radius: 6px;
-      text-align: center;
+    .modal {
       display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
     }
-
-    .success {
-      background-color: rgba(46, 204, 113, 0.2);
-      color: var(--success-color);
-      border: 1px solid rgba(46, 204, 113, 0.3);
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 5px;
     }
-
-    .error {
-      background-color: rgba(231, 76, 60, 0.2);
-      color: var(--error-color);
-      border: 1px solid rgba(231, 76, 60, 0.3);
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
     }
-
-    .admin-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: var(--primary-color);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .admin-link:hover {
-      text-decoration: underline;
-    }
-
-    .file-info {
-      font-size: 12px;
-      color: #666;
-      margin-top: 5px;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 20px;
-      }
+    .close:hover {
+      color: black;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
   <div class="container">
-    <h1>Student Information Form</h1>
+    <div class="login-container" id="loginContainer">
+      <h2>Admin Login</h2>
+      <p>Sign in with Google to access the admin dashboard</p>
+      <button id="google-signin">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo">
+        Sign in with Google
+      </button>
+      <div class="status" id="loginStatus"></div>
+    </div>
 
-    <div id="status"></div>
+    <div class="dashboard-container" id="dashboardContainer">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+      <h1>Admin Dashboard</h1>
+      <div class="status" id="dashboardStatus"></div>
 
-    <form id="studentForm">
-      <div class="form-group">
-        <label for="fullName" class="required">Full Name</label>
-        <input type="text" id="fullName" required>
+      <h2>Student Records</h2>
+      <button id="refreshBtn">Refresh List</button>
+      <table id="studentsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>College</th>
+            <th>Course</th>
+            <th>Year</th>
+            <th>Specialization</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody">
+          <!-- Students will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Student</h2>
+        <form id="editForm">
+          <input type="hidden" id="editStudentId">
+          <div class="form-group">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName" required>
+          </div>
+          <div class="form-group">
+            <label for="editCollegeName">College Name</label>
+            <input type="text" id="editCollegeName" required>
+          </div>
+          <div class="form-group">
+            <label for="editCourse">Course</label>
+            <input type="text" id="editCourse" required>
+          </div>
+          <div class="form-group">
+            <label for="editCurrentYear">Current Year</label>
+            <input type="number" id="editCurrentYear" min="1" max="5" required>
+          </div>
+          <div class="form-group">
+            <label for="editSpecialization">Specialization</label>
+            <input type="text" id="editSpecialization">
+          </div>
+          <div class="form-group">
+            <label for="editMobileNumber">Mobile Number</label>
+            <input type="text" id="editMobileNumber" required>
+          </div>
+          <div class="form-group">
+            <label for="editEmailId">Email ID</label>
+            <input type="email" id="editEmailId" required>
+          </div>
+          <div class="edit-actions">
+            <button type="button" id="saveEditBtn">Save Changes</button>
+            <button type="button" id="cancelEditBtn">Cancel</button>
+          </div>
+        </form>
       </div>
-
-      <div class="form-group">
-        <label for="collegeName" class="required">College Name</label>
-        <input type="text" id="collegeName" required>
-      </div>
-
-      <div class="form-group">
-        <label for="course" class="required">Course</label>
-        <input type="text" id="course" required>
-      </div>
-
-      <div class="form-group">
-        <label for="currentYear" class="required">Current Year</label>
-        <input type="number" id="currentYear" min="1" max="5" required>
-      </div>
-
-      <div class="form-group">
-        <label for="specialization">Specialization (if any)</label>
-        <input type="text" id="specialization">
-      </div>
-
-      <div class="form-group">
-        <label for="mobileNumber" class="required">Mobile Number</label>
-        <input type="tel" id="mobileNumber" required>
-      </div>
-
-      <div class="form-group">
-        <label for="emailId" class="required">Email ID</label>
-        <input type="email" id="emailId" required>
-      </div>
-
-      <div class="form-group">
-        <label for="photo">Profile Photo (Optional)</label>
-        <div class="photo-upload">
-          <input type="file" id="photo" accept="image/*">
-          <label for="photo" class="photo-upload-label">
-            <i class="fas fa-cloud-upload-alt"></i> Click to upload photo
-          </label>
-          <div class="photo-instructions">Max size: 500KB (JPG, PNG)</div>
-        </div>
-        <div id="photoPreview" class="photo-preview">
-          <img id="previewImage">
-          <div id="fileInfo" class="file-info"></div>
-        </div>
-      </div>
-
-      <button type="submit" id="submitBtn">Submit Information</button>
-    </form>
-
-    <!-- <a href="/admin" class="admin-link" target="_blank">Admin Login</a> -->
+    </div>
   </div>
 
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9erOtjg-xhoWm8RO2Adn_KDJOPml3FXE",
+      authDomain: "shop-dbf4b.firebaseapp.com",
+      projectId: "shop-dbf4b",
+      storageBucket: "shop-dbf4b.firebasestorage.app",
+      messagingSenderId: "321149556755",
+      appId: "1:321149556755:web:b48e8270e5af9fe51007e6"
+    };
 
- <script>
-    // Update the API URL to point to your Render backend
-    const API_BASE_URL = 'https://hackthon-ujtu.onrender.com/api';
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    // Show status messages
-    function showStatus(message, isError = false) {
-      const statusDiv = document.getElementById('status');
-      statusDiv.textContent = message;
-      statusDiv.className = isError ? 'status error' : 'status success';
-      statusDiv.style.display = 'block';
+    // DOM elements
+    const loginContainer = document.getElementById('loginContainer');
+    const dashboardContainer = document.getElementById('dashboardContainer');
+    const googleSignInBtn = document.getElementById('google-signin');
+    const loginStatus = document.getElementById('loginStatus');
+    const dashboardStatus = document.getElementById('dashboardStatus');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const studentsTableBody = document.getElementById('studentsTableBody');
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const closeModal = document.querySelector('.close');
+
+    // Global variable for token
+    let adminToken = null;
+    let currentEditId = null;
+
+    // Google Sign-In
+    googleSignInBtn.addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          return result.user.getIdToken();
+        })
+        .then((idToken) => {
+          adminToken = idToken;
+          showStatus(loginStatus, 'Login successful! Loading dashboard...', false);
+          loadDashboard();
+        })
+        .catch((error) => {
+          showStatus(loginStatus, 'Login failed: ' + error.message, true);
+        });
+    });
+
+    // Check if already logged in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        user.getIdToken().then((idToken) => {
+          adminToken = idToken;
+          loadDashboard();
+        });
+      }
+    });
+
+    // Load dashboard
+    function loadDashboard() {
+      loginContainer.style.display = 'none';
+      dashboardContainer.style.display = 'block';
+      fetchStudents();
+    }
+
+    // Show status message
+    function showStatus(element, message, isError) {
+      element.textContent = message;
+      element.className = isError ? 'status error' : 'status success';
+      element.style.display = 'block';
 
       setTimeout(() => {
-        statusDiv.style.display = 'none';
+        element.style.display = 'none';
       }, 5000);
     }
 
-    // Handle form submission
-    document.getElementById('studentForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      showStatus('Submitting your information...');
+    // Fetch students
+    async function fetchStudents() {
+      showStatus(dashboardStatus, 'Loading students...', false);
 
-      // Get photo as base64 if available
-      let photoBase64 = null;
-      const photoInput = document.getElementById('photo');
-      if (photoInput.files && photoInput.files[0]) {
-        const reader = new FileReader();
-        reader.readAsDataURL(photoInput.files[0]);
-        photoBase64 = await new Promise((resolve) => {
-          reader.onload = () => {
-            resolve(reader.result);
-          };
+      try {
+        const response = await fetch('http://localhost:5000/api/admin/students', {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
         });
-      }
 
-      const formData = {
-        fullName: document.getElementById('fullName').value.trim(),
-        collegeName: document.getElementById('collegeName').value.trim(),
-        course: document.getElementById('course').value.trim(),
-        currentYear: document.getElementById('currentYear').value,
-        specialization: document.getElementById('specialization').value.trim(),
-        mobileNumber: document.getElementById('mobileNumber').value.trim(),
-        emailId: document.getElementById('emailId').value.trim(),
-        photo: photoBase64
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch students');
+        }
+
+        const students = await response.json();
+        renderStudents(students);
+        showStatus(dashboardStatus, 'Students loaded successfully!', false);
+      } catch (error) {
+        showStatus(dashboardStatus, 'Error: ' + error.message, true);
+        console.error('Fetch error:', error);
+      }
+    }
+
+    // Render students in table
+    function renderStudents(students) {
+      studentsTableBody.innerHTML = '';
+
+      students.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.fullName}</td>
+          <td>${student.collegeName}</td>
+          <td>${student.course}</td>
+          <td>${student.currentYear}</td>
+          <td>${student.specialization || '-'}</td>
+          <td>${student.mobileNumber}</td>
+          <td>${student.emailId}</td>
+          <td>
+            <button class="action-btn edit-btn" data-id="${student.id}">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="action-btn delete-btn" data-id="${student.id}">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </td>
+        `;
+        studentsTableBody.appendChild(row);
+      });
+
+      // Add event listeners to edit and delete buttons
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const studentId = e.target.closest('button').dataset.id;
+          openEditModal(studentId);
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const studentId = e.target.closest('button').dataset.id;
+          deleteStudent(studentId);
+        });
+      });
+    }
+
+    // Open edit modal
+    async function openEditModal(studentId) {
+      currentEditId = studentId;
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/students/${studentId}`, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch student data');
+        }
+
+        const student = await response.json();
+
+        // Populate modal with student data
+        document.getElementById('editStudentId').value = studentId;
+        document.getElementById('editFullName').value = student.fullName;
+        document.getElementById('editCollegeName').value = student.collegeName;
+        document.getElementById('editCourse').value = student.course;
+        document.getElementById('editCurrentYear').value = student.currentYear;
+        document.getElementById('editSpecialization').value = student.specialization || '';
+        document.getElementById('editMobileNumber').value = student.mobileNumber;
+        document.getElementById('editEmailId').value = student.emailId;
+
+        // Show modal
+        editModal.style.display = 'block';
+      } catch (error) {
+        showStatus(dashboardStatus, 'Error: ' + error.message, true);
+        console.error('Error fetching student:', error);
+      }
+    }
+
+    // Save edited student
+    saveEditBtn.addEventListener('click', async () => {
+      const updatedData = {
+        fullName: document.getElementById('editFullName').value,
+        collegeName: document.getElementById('editCollegeName').value,
+        course: document.getElementById('editCourse').value,
+        currentYear: parseInt(document.getElementById('editCurrentYear').value),
+        specialization: document.getElementById('editSpecialization').value || null,
+        mobileNumber: document.getElementById('editMobileNumber').value,
+        emailId: document.getElementById('editEmailId').value
       };
 
       try {
-        // Use the absolute URL to your Render backend
-        const response = await fetch(`${API_BASE_URL}/students`, {
-          method: 'POST',
+        const response = await fetch(`http://localhost:5000/api/admin/students/${currentEditId}`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(updatedData)
         });
 
-        const data = await response.json();
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update student');
+        }
+
+        showStatus(dashboardStatus, 'Student updated successfully!', false);
+        editModal.style.display = 'none';
+        fetchStudents(); // Refresh the list
+      } catch (error) {
+        showStatus(dashboardStatus, 'Error: ' + error.message, true);
+        console.error('Update error:', error);
+      }
+    });
+
+    // Cancel edit
+    cancelEditBtn.addEventListener('click', () => {
+      editModal.style.display = 'none';
+    });
+
+    // Close modal when clicking X
+    closeModal.addEventListener('click', () => {
+      editModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === editModal) {
+        editModal.style.display = 'none';
+      }
+    });
+
+    // Delete student
+    async function deleteStudent(studentId) {
+      if (!confirm('Are you sure you want to delete this student?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/students/${studentId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to submit information');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to delete student');
         }
 
-        showStatus('Information submitted successfully!');
-        document.getElementById('studentForm').reset();
-        document.getElementById('photoPreview').style.display = 'none';
+        showStatus(dashboardStatus, 'Student deleted successfully!', false);
+        fetchStudents(); // Refresh the list
       } catch (error) {
-        console.error('Submission error:', error);
-        showStatus(error.message, true);
-      } finally {
-        submitBtn.disabled = false;
+        showStatus(dashboardStatus, 'Error: ' + error.message, true);
+        console.error('Delete error:', error);
       }
-    });
+    }
 
-    // Photo upload preview
-    document.getElementById('photo').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        // Check file size (max 500KB)
-        if (file.size > 500 * 1024) {
-          showStatus('Photo size exceeds 500KB limit. Please choose a smaller file.', true);
-          this.value = '';
-          return;
-        }
+    // Refresh button
+    refreshBtn.addEventListener('click', fetchStudents);
 
-        // Check file type
-        if (!file.type.match('image.*')) {
-          showStatus('Please select an image file (JPG, PNG).', true);
-          this.value = '';
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          document.getElementById('previewImage').src = event.target.result;
-          document.getElementById('photoPreview').style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    // Logout function
+    window.logout = function() {
+      auth.signOut().then(() => {
+        adminToken = null;
+        loginContainer.style.display = 'block';
+        dashboardContainer.style.display = 'none';
+        showStatus(loginStatus, 'Logged out successfully', false);
+      }).catch((error) => {
+        showStatus(loginStatus, 'Logout failed: ' + error.message, true);
+      });
+    };
   </script>
 </body>
 </html>
