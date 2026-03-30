@@ -294,7 +294,7 @@
       apiKey: "AIzaSyC9erOtjg-xhoWm8RO2Adn_KDJOPml3FXE",
       authDomain: "shop-dbf4b.firebaseapp.com",
       projectId: "shop-dbf4b",
-      storageBucket: "shop-dbf4b.firebasestorage.app",
+      storageBucket: "shop-dbf4b.appspot.com",
       messagingSenderId: "321149556755",
       appId: "1:321149556755:web:b48e8270e5af9fe51007e6"
     };
@@ -321,6 +321,7 @@
     // Global variable for token
     let adminToken = null;
     let currentEditId = null;
+    const backendUrl = 'https://hackthon-ujtu.onrender.com'; // Update with your backend URL
 
     // Google Sign-In
     googleSignInBtn.addEventListener('click', () => {
@@ -372,7 +373,7 @@
       showStatus(dashboardStatus, 'Loading students...', false);
 
       try {
-        const response = await fetch('http://localhost:5000/api/admin/students', {
+        const response = await fetch(`${backendUrl}/api/admin/students`, {
           headers: {
             'Authorization': `Bearer ${adminToken}`
           }
@@ -449,7 +450,7 @@
       currentEditId = studentId;
 
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/students/${studentId}`, {
+        const response = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
           headers: {
             'Authorization': `Bearer ${adminToken}`
           }
@@ -496,12 +497,10 @@
         specialization: document.getElementById('editSpecialization').value || null,
         mobileNumber: document.getElementById('editMobileNumber').value,
         emailId: document.getElementById('editEmailId').value
-        // Note: We're not updating the photo in this simple implementation
-        // In a real app, you would add photo upload functionality here
       };
 
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/students/${currentEditId}`, {
+        const response = await fetch(`${backendUrl}/api/admin/students/${currentEditId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -548,7 +547,7 @@
       }
 
       try {
-        const response = await fetch(`https://hackthon-ujtu.onrender.com/api/admin/students/${studentId}`, {
+        const response = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${adminToken}`
