@@ -113,24 +113,26 @@
       top: 20px;
       right: 20px;
     }
-    .edit-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 15px;
-      background-color: #f9f9f9;
-      border-radius: 5px;
-      margin: 10px 0;
+    .student-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+      vertical-align: middle;
     }
-    .edit-form input {
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .edit-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
+    .no-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: inline-block;
+      margin-right: 10px;
+      vertical-align: middle;
+      line-height: 50px;
+      text-align: center;
+      color: #777;
+      font-size: 20px;
     }
     .modal {
       display: none;
@@ -162,6 +164,38 @@
     .close:hover {
       color: black;
     }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .photo-preview {
+      margin: 15px 0;
+      text-align: center;
+    }
+    .photo-preview img {
+      max-width: 150px;
+      max-height: 150px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    .edit-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .edit-actions button {
+      flex: 1;
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -187,6 +221,7 @@
       <table id="studentsTable">
         <thead>
           <tr>
+            <th>Photo</th>
             <th>Name</th>
             <th>College</th>
             <th>Course</th>
@@ -238,6 +273,9 @@
             <label for="editEmailId">Email ID</label>
             <input type="email" id="editEmailId" required>
           </div>
+          <div class="photo-preview" id="editPhotoPreview">
+            <!-- Photo preview will appear here -->
+          </div>
           <div class="edit-actions">
             <button type="button" id="saveEditBtn">Save Changes</button>
             <button type="button" id="cancelEditBtn">Cancel</button>
@@ -278,6 +316,7 @@
     const saveEditBtn = document.getElementById('saveEditBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const closeModal = document.querySelector('.close');
+    const editPhotoPreview = document.getElementById('editPhotoPreview');
 
     // Global variable for token
     let adminToken = null;
@@ -353,13 +392,23 @@
       }
     }
 
-    // Render students in table
+    // Render students in table with photos
     function renderStudents(students) {
       studentsTableBody.innerHTML = '';
 
       students.forEach(student => {
         const row = document.createElement('tr');
+
+        // Create photo cell
+        let photoCell;
+        if (student.photo) {
+          photoCell = `<td><img src="${student.photo}" class="student-photo" alt="${student.fullName}"></td>`;
+        } else {
+          photoCell = `<td><div class="no-photo"><i class="fas fa-user"></i></div></td>`;
+        }
+
         row.innerHTML = `
+          ${photoCell}
           <td>${student.fullName}</td>
           <td>${student.collegeName}</td>
           <td>${student.course}</td>
@@ -422,6 +471,13 @@
         document.getElementById('editMobileNumber').value = student.mobileNumber;
         document.getElementById('editEmailId').value = student.emailId;
 
+        // Show photo preview if available
+        if (student.photo) {
+          editPhotoPreview.innerHTML = `<img src="${student.photo}" class="photo-preview-img" alt="Student photo">`;
+        } else {
+          editPhotoPreview.innerHTML = '<p>No photo available</p>';
+        }
+
         // Show modal
         editModal.style.display = 'block';
       } catch (error) {
@@ -440,6 +496,8 @@
         specialization: document.getElementById('editSpecialization').value || null,
         mobileNumber: document.getElementById('editMobileNumber').value,
         emailId: document.getElementById('editEmailId').value
+        // Note: We're not updating the photo in this simple implementation
+        // In a real app, you would add photo upload functionality here
       };
 
       try {
@@ -490,7 +548,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/students/${studentId}`, {
+        const response = await fetch(`https://hackthon-ujtu.onrender.com/api/admin/students/${studentId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${adminToken}`
