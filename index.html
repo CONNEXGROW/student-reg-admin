@@ -1,536 +1,886 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title>Admin Dashboard - Yuva Bharat</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :root {
-      --saffron: #FF9933;
-      --white: #FFFFFF;
-      --green: #138808;
-      --dark-gray: #333333;
-      --light-gray: #f5f5f5;
-      --border-gray: #dddddd;
-      --error-red: #F44336;
-      --success-green: #4CAF50;
-      --warning-yellow: #FFC107;
+      --primary: #138808;
+      --secondary: #FF9933;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --success: #28a745;
+      --info: #17a2b8;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --border: #dee2e6;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--light-gray);
-      color: var(--dark-gray);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--dark);
+      min-height: 100vh;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+    /* Login Container */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
     }
 
     .login-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 40px;
       max-width: 400px;
-      margin: 50px auto;
-      padding: 30px;
-      background: var(--white);
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
       text-align: center;
-      border-top: 5px solid var(--saffron);
     }
 
-    .dashboard-container {
-      display: none;
-      background: var(--white);
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      margin-top: 20px;
-      border-top: 5px solid var(--green);
+    .login-header {
+      margin-bottom: 30px;
     }
 
-    h1, h2 {
-      color: var(--dark-gray);
-      margin-bottom: 20px;
+    .login-header h1 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 10px;
     }
 
-    h1 {
-      border-bottom: 2px solid var(--saffron);
-      padding-bottom: 10px;
-      color: var(--green);
+    .login-header p {
+      color: #6c757d;
+      font-size: 14px;
     }
 
-    h2 {
-      color: var(--saffron);
-    }
-
-    button {
-      background-color: var(--green);
-      color: var(--white);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin: 10px 0;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0d6b03;
-    }
-
-    #google-signin {
+    .google-signin {
       display: flex;
-      justify-content: center;
       align-items: center;
-      background-color: var(--white);
-      color: var(--dark-gray);
-      border: 1px solid var(--border-gray);
-      padding: 10px 20px;
-      margin: 20px auto;
+      justify-content: center;
+      gap: 12px;
+      background: white;
+      color: #333;
+      border: 2px solid var(--border);
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      font-size: 16px;
     }
 
-    #google-signin:hover {
-      background-color: #f9f9f9;
+    .google-signin:hover {
+      background: var(--light);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
     }
 
-    #google-signin img {
+    .google-signin img {
       width: 20px;
       height: 20px;
-      margin-right: 10px;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-wrapper {
+      display: none;
+      min-height: 100vh;
+      background: var(--light);
+    }
+
+    .dashboard-header {
+      background: white;
+      padding: 20px 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .dashboard-header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dashboard-header h1 {
+      color: var(--primary);
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .logout-btn {
-      background-color: var(--error-red);
-      position: absolute;
-      top: 20px;
-      right: 20px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .logout-btn:hover {
-      background-color: #d32f2f;
+      background: #c82333;
+      transform: translateY(-2px);
+    }
+
+    .dashboard-main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* Status Messages */
+    .alert {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      animation: slideIn 0.3s ease;
+      font-weight: 500;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-left: 4px solid var(--success);
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid var(--danger);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: #0d6b03;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #e68a1f;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: #333;
+    }
+
+    .btn-warning:hover {
+      background: #e0a800;
+    }
+
+    /* Table Styles */
+    .table-wrapper {
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
     }
 
     th {
-      background-color: var(--saffron);
-      color: var(--white);
-      padding: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, #0d6b03 100%);
+      color: white;
+      padding: 15px;
       text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-gray);
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--border);
     }
 
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
+    tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Student Photo */
+    .student-photo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .no-photo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary) 0%, #ff7a00 100%);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-assigned {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .action-btn {
       padding: 6px 12px;
-      margin-right: 5px;
-      font-size: 14px;
+      border: none;
       border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .edit-btn {
-      background-color: var(--warning-yellow);
-      color: var(--dark-gray);
+    .action-btn-assign {
+      background: var(--secondary);
+      color: white;
     }
 
-    .edit-btn:hover {
-      background-color: #e0a800;
+    .action-btn-assign:hover {
+      background: #e68a1f;
     }
 
-    .delete-btn {
-      background-color: var(--error-red);
-      color: var(--white);
+    .action-btn-edit {
+      background: var(--warning);
+      color: #333;
     }
 
-    .delete-btn:hover {
-      background-color: #d32f2f;
+    .action-btn-edit:hover {
+      background: #e0a800;
     }
 
-    .status {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-      display: none;
+    .action-btn-delete {
+      background: var(--danger);
+      color: white;
     }
 
-    .success {
-      background-color: #dff0d8;
-      color: var(--success-green);
-      border-left: 4px solid var(--success-green);
+    .action-btn-delete:hover {
+      background: #c82333;
     }
 
-    .error {
-      background-color: #f2dede;
-      color: var(--error-red);
-      border-left: 4px solid var(--error-red);
-    }
-
-    .student-photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 10px;
-      vertical-align: middle;
-      border: 2px solid var(--green);
-    }
-
-    .no-photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: var(--border-gray);
-      display: inline-block;
-      margin-right: 10px;
-      vertical-align: middle;
-      line-height: 50px;
-      text-align: center;
-      color: var(--white);
-      background-color: var(--saffron);
-    }
-
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1;
+      z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal.show {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
     }
 
     .modal-content {
-      background-color: var(--white);
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid var(--border-gray);
-      width: 80%;
-      max-width: 600px;
-      border-radius: 5px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-top: 4px solid var(--saffron);
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
     }
 
-    .close {
-      color: var(--dark-gray);
-      float: right;
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .modal-header h2 {
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
       font-size: 28px;
-      font-weight: bold;
+      cursor: pointer;
+      color: #6c757d;
+      transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+      color: var(--dark);
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(19, 136, 8, 0.1);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
       cursor: pointer;
     }
 
-    .close:hover {
-      color: var(--error-red);
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 600;
-      color: var(--green);
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border-gray);
-      border-radius: 4px;
-      font-size: 16px;
-    }
-
-    .form-group input[type="file"] {
-      padding: 5px;
-      border: 1px dashed var(--border-gray);
-      border-radius: 4px;
-      background-color: #f9f9f9;
-    }
-
-    .photo-preview {
-      margin: 15px 0;
-      text-align: center;
-    }
-
-    .photo-preview img {
-      max-width: 150px;
-      max-height: 150px;
-      border-radius: 8px;
-      border: 2px solid var(--saffron);
-    }
-
-    .edit-actions {
+    /* Button Group */
+    .button-group {
       display: flex;
       gap: 10px;
-      margin-top: 20px;
+      margin-top: 25px;
     }
 
-    .edit-actions button {
+    .button-group button {
       flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 14px;
     }
 
-    #saveEditBtn {
-      background-color: var(--green);
+    .button-group .btn-primary {
+      background: var(--primary);
+      color: white;
     }
 
-    #cancelEditBtn {
-      background-color: var(--border-gray);
-      color: var(--dark-gray);
+    .button-group .btn-primary:hover {
+      background: #0d6b03;
     }
 
-    #cancelEditBtn:hover {
-      background-color: #bbbbbb;
+    .button-group .btn-secondary {
+      background: #e9ecef;
+      color: var(--dark);
     }
 
-    #refreshBtn {
-      background-color: var(--saffron);
-      color: var(--white);
+    .button-group .btn-secondary:hover {
+      background: #dee2e6;
     }
 
-    #refreshBtn:hover {
-      background-color: #e68a00;
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .dashboard-header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .dashboard-header h1 {
+        font-size: 20px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+      }
+
+      .toolbar .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 20px;
+      }
+
+      .login-container {
+        padding: 30px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-main {
+        padding: 15px 10px;
+      }
+
+      .dashboard-header h1 {
+        font-size: 18px;
+      }
+
+      th, td {
+        padding: 8px;
+        font-size: 11px;
+      }
+
+      .action-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+
+      .logout-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .button-group button {
+        padding: 10px 12px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="login-container" id="loginContainer">
-      <h2>Admin Login</h2>
-      <p>Sign in with Google to access the admin dashboard</p>
-      <button id="google-signin">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo">
+  <!-- Login Container -->
+  <div class="login-wrapper" id="loginWrapper">
+    <div class="login-container">
+      <div class="login-header">
+        <h1>
+          <i class="fas fa-graduation-cap"></i> Yuva Bharat
+        </h1>
+        <p>Admin Dashboard</p>
+      </div>
+      <button class="google-signin" id="googleSignin">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
         Sign in with Google
       </button>
-      <div class="status" id="loginStatus"></div>
+      <div class="alert" id="loginAlert"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div class="dashboard-wrapper" id="dashboardWrapper">
+    <div class="dashboard-header">
+      <div class="dashboard-header-content">
+        <h1>
+          <i class="fas fa-chart-bar"></i> Dashboard
+        </h1>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
     </div>
 
-    <div class="dashboard-container" id="dashboardContainer">
-      <button class="logout-btn" onclick="logout()">Logout</button>
-      <h1>Admin Dashboard</h1>
-      <div class="status" id="dashboardStatus"></div>
+    <div class="dashboard-main">
+      <div class="alert" id="dashboardAlert"></div>
 
-      <h2>Student Records</h2>
-      <button id="refreshBtn">Refresh List</button>
-      <table id="studentsTable">
-        <thead>
-          <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>College</th>
-            <th>Course</th>
-            <th>Year</th>
-            <th>Specialization</th>
-            <th>Mobile</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="studentsTableBody">
-          <!-- Students will be loaded here -->
-        </tbody>
-      </table>
-    </div>
+      <div class="toolbar">
+        <button class="btn" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Edit Student</h2>
-        <form id="editForm">
-          <input type="hidden" id="editStudentId">
-          <div class="form-group">
-            <label for="editFullName">Full Name</label>
-            <input type="text" id="editFullName" required>
-          </div>
-          <div class="form-group">
-            <label for="editCollegeName">College Name</label>
-            <input type="text" id="editCollegeName" required>
-          </div>
-          <div class="form-group">
-            <label for="editCourse">Course</label>
-            <input type="text" id="editCourse" required>
-          </div>
-          <div class="form-group">
-            <label for="editCurrentYear">Current Year</label>
-            <input type="number" id="editCurrentYear" min="1" max="5" required>
-          </div>
-          <div class="form-group">
-            <label for="editSpecialization">Specialization</label>
-            <input type="text" id="editSpecialization">
-          </div>
-          <div class="form-group">
-            <label for="editMobileNumber">Mobile Number</label>
-            <input type="text" id="editMobileNumber" required>
-          </div>
-          <div class="form-group">
-            <label for="editEmailId">Email ID</label>
-            <input type="email" id="editEmailId" required>
-          </div>
-          <div class="form-group">
-            <label for="editPhoto">Student Photo (Mandatory)</label>
-            <input type="file" id="editPhoto" accept="image/*" required>
-            <small>Only JPG, PNG, or JPEG files are allowed.</small>
-          </div>
-          <div class="photo-preview" id="editPhotoPreview">
-            <!-- Photo preview will appear here -->
-          </div>
-          <div class="edit-actions">
-            <button type="button" id="saveEditBtn">Save Changes</button>
-            <button type="button" id="cancelEditBtn">Cancel</button>
-          </div>
-        </form>
+      <div class="table-wrapper">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Name</th>
+              <th>College</th>
+              <th>Course</th>
+              <th>Year</th>
+              <th>Specialization</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Edit Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Student</h2>
+        <button class="close-btn" onclick="closeEditModal()">&times;</button>
+      </div>
+      <form id="editForm">
+        <input type="hidden" id="editStudentId">
+        <div class="form-group">
+          <label for="editFullName">Full Name</label>
+          <input type="text" id="editFullName" required>
+        </div>
+        <div class="form-group">
+          <label for="editCollegeName">College Name</label>
+          <input type="text" id="editCollegeName" required>
+        </div>
+        <div class="form-group">
+          <label for="editCourse">Course</label>
+          <input type="text" id="editCourse" required>
+        </div>
+        <div class="form-group">
+          <label for="editCurrentYear">Current Year</label>
+          <input type="number" id="editCurrentYear" min="1" max="5" required>
+        </div>
+        <div class="form-group">
+          <label for="editSpecialization">Specialization</label>
+          <input type="text" id="editSpecialization">
+        </div>
+        <div class="form-group">
+          <label for="editMobileNumber">Mobile Number</label>
+          <input type="text" id="editMobileNumber" required>
+        </div>
+        <div class="form-group">
+          <label for="editEmailId">Email ID</label>
+          <input type="email" id="editEmailId" required>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn-primary" onclick="saveEdit()">Save Changes</button>
+          <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Company Modal -->
+  <div class="modal" id="assignModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Assign Company</h2>
+        <button class="close-btn" onclick="closeAssignModal()">&times;</button>
+      </div>
+      <form id="assignForm">
+        <input type="hidden" id="assignStudentId">
+        <div class="form-group">
+          <label for="companyName">Select Company</label>
+          <select id="companyName" required>
+            <option value="">Choose a company...</option>
+            <option value="Asl Motors Pvt Ltd">Asl Motors Pvt Ltd</option>
+            <option value="Hero Moto Corp">Hero Moto Corp</option>
+            <option value="Yamaha Motor Company">Yamaha Motor Company</option>
+            <option value="New Auto Pvt Ltd">New Auto Pvt Ltd</option>
+            <option value="Sai Enterprises">Sai Enterprises</option>
+            <option value="JUSCO">JUSCO</option>
+            <option value="Sudisa">Sudisa</option>
+            <option value="Arush Metal Casting Ltd">Arush Metal Casting Ltd</option>
+            <option value="Honda Motorcycle and Scooter India">Honda Motorcycle and Scooter India</option>
+            <option value="Skoda Auto">Skoda Auto</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="sendEmail" checked>
+            <label for="sendEmail" style="margin: 0;">Send email notification</label>
+          </div>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn-primary" onclick="assignCompany()">Assign Company</button>
+          <button type="button" class="btn-secondary" onclick="closeAssignModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
   <script>
-    // Your web app's Firebase configuration
+    emailjs.init('AgZwkb4bX9rqulmzK');
+
     const firebaseConfig = {
       apiKey: "AIzaSyC9erOtjg-xhoWm8RO2Adn_KDJOPml3FXE",
       authDomain: "shop-dbf4b.firebaseapp.com",
       projectId: "shop-dbf4b",
-      storageBucket: "shop-dbf4b.firebasestorage.app",
+      storageBucket: "shop-dbf4b.appspot.com",
       messagingSenderId: "321149556755",
       appId: "1:321149556755:web:b48e8270e5af9fe51007e6"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const storage = firebase.storage();
 
-    // DOM elements
-    const loginContainer = document.getElementById('loginContainer');
-    const dashboardContainer = document.getElementById('dashboardContainer');
-    const googleSignInBtn = document.getElementById('google-signin');
-    const loginStatus = document.getElementById('loginStatus');
-    const dashboardStatus = document.getElementById('dashboardStatus');
+    let adminToken = null;
+    let currentEditId = null;
+    const backendUrl = 'https://hackthon-ujtu.onrender.com';
+
+    // UI Elements
+    const loginWrapper = document.getElementById('loginWrapper');
+    const dashboardWrapper = document.getElementById('dashboardWrapper');
+    const googleSignin = document.getElementById('googleSignin');
+    const loginAlert = document.getElementById('loginAlert');
+    const dashboardAlert = document.getElementById('dashboardAlert');
     const refreshBtn = document.getElementById('refreshBtn');
     const studentsTableBody = document.getElementById('studentsTableBody');
     const editModal = document.getElementById('editModal');
-    const editForm = document.getElementById('editForm');
-    const saveEditBtn = document.getElementById('saveEditBtn');
-    const cancelEditBtn = document.getElementById('cancelEditBtn');
-    const closeModal = document.querySelector('.close');
-    const editPhotoPreview = document.getElementById('editPhotoPreview');
+    const assignModal = document.getElementById('assignModal');
 
-    // Global variable for token
-    let adminToken = null;
-    let currentEditId = null;
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      googleSignin.addEventListener('click', signInWithGoogle);
+      refreshBtn.addEventListener('click', fetchStudents);
+      
+      // Close modals on background click
+      window.addEventListener('click', (e) => {
+        if (e.target === editModal) closeEditModal();
+        if (e.target === assignModal) closeAssignModal();
+      });
 
-    // Google Sign-In
-    googleSignInBtn.addEventListener('click', () => {
+      // Check if already logged in
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          user.getIdToken().then((token) => {
+            adminToken = token;
+            loadDashboard();
+          });
+        }
+      });
+    });
+
+    function signInWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider)
-        .then((result) => {
-          return result.user.getIdToken();
-        })
-        .then((idToken) => {
-          adminToken = idToken;
-          showStatus(loginStatus, 'Login successful! Loading dashboard...', false);
-          loadDashboard();
+        .then((result) => result.user.getIdToken())
+        .then((token) => {
+          adminToken = token;
+          showAlert(loginAlert, 'Login successful! Loading dashboard...', 'success');
+          setTimeout(loadDashboard, 500);
         })
         .catch((error) => {
-          showStatus(loginStatus, 'Login failed: ' + error.message, true);
+          showAlert(loginAlert, 'Login failed: ' + error.message, 'error');
         });
-    });
+    }
 
-    // Check if already logged in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        user.getIdToken().then((idToken) => {
-          adminToken = idToken;
-          loadDashboard();
-        });
-      }
-    });
-
-    // Load dashboard
     function loadDashboard() {
-      loginContainer.style.display = 'none';
-      dashboardContainer.style.display = 'block';
+      loginWrapper.style.display = 'none';
+      dashboardWrapper.style.display = 'block';
       fetchStudents();
     }
 
-    // Show status message
-    function showStatus(element, message, isError) {
+    function showAlert(element, message, type) {
       element.textContent = message;
-      element.className = isError ? 'status error' : 'status success';
-      element.style.display = 'block';
-
+      element.className = `alert show alert-${type}`;
       setTimeout(() => {
-        element.style.display = 'none';
+        element.classList.remove('show');
       }, 5000);
     }
 
-    // Fetch students
     async function fetchStudents() {
-      showStatus(dashboardStatus, 'Loading students...', false);
-
+      showAlert(dashboardAlert, 'Loading students...', 'success');
       try {
-        const response = await fetch('https://hackthon-ujtu.onrender.com/api/admin/students', {
-          headers: {
-            'Authorization': `Bearer ${adminToken}`
-          }
+        const response = await fetch(`${backendUrl}/api/admin/students`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch students');
-        }
-
+        if (!response.ok) throw new Error('Failed to fetch students');
         const students = await response.json();
         renderStudents(students);
-        showStatus(dashboardStatus, 'Students loaded successfully!', false);
+        showAlert(dashboardAlert, 'Students loaded successfully!', 'success');
       } catch (error) {
-        showStatus(dashboardStatus, 'Error: ' + error.message, true);
-        console.error('Fetch error:', error);
+        showAlert(dashboardAlert, 'Error: ' + error.message, 'error');
       }
     }
 
-    // Render students in table with photos
     function renderStudents(students) {
       studentsTableBody.innerHTML = '';
-
       students.forEach(student => {
         const row = document.createElement('tr');
-
-        // Create photo cell
-        let photoCell;
-        if (student.photo) {
-          photoCell = `<td><img src="${student.photo}" class="student-photo" alt="${student.fullName}"></td>`;
-        } else {
-          photoCell = `<td><div class="no-photo"><i class="fas fa-user"></i></div></td>`;
-        }
+        const photoCell = student.photo
+          ? `<img src="${student.photo}" class="student-photo" alt="${student.fullName}">`
+          : `<div class="no-photo"><i class="fas fa-user"></i></div>`;
+        const statusBadge = student.assignedCompany
+          ? `<span class="badge badge-assigned">${student.assignedCompany} ✓</span>`
+          : `<span class="badge badge-pending">Pending</span>`;
 
         row.innerHTML = `
-          ${photoCell}
+          <td>${photoCell}</td>
           <td>${student.fullName}</td>
           <td>${student.collegeName}</td>
           <td>${student.course}</td>
@@ -538,52 +888,33 @@
           <td>${student.specialization || '-'}</td>
           <td>${student.mobileNumber}</td>
           <td>${student.emailId}</td>
+          <td>${statusBadge}</td>
           <td>
-            <button class="action-btn edit-btn" data-id="${student.id}">
-              <i class="fas fa-edit"></i> Edit
-            </button>
-            <button class="action-btn delete-btn" data-id="${student.id}">
-              <i class="fas fa-trash"></i> Delete
-            </button>
+            <div class="action-buttons">
+              <button class="action-btn action-btn-assign" onclick="openAssignModal('${student.id}')">
+                <i class="fas fa-building"></i> Assign
+              </button>
+              <button class="action-btn action-btn-edit" onclick="openEditModal('${student.id}')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="action-btn action-btn-delete" onclick="deleteStudent('${student.id}')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
           </td>
         `;
         studentsTableBody.appendChild(row);
       });
-
-      // Add event listeners to edit and delete buttons
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const studentId = e.target.closest('button').dataset.id;
-          openEditModal(studentId);
-        });
-      });
-
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const studentId = e.target.closest('button').dataset.id;
-          deleteStudent(studentId);
-        });
-      });
     }
 
-    // Open edit modal
     async function openEditModal(studentId) {
       currentEditId = studentId;
-
       try {
-        const response = await fetch(`https://hackthon-ujtu.onrender.com/api/admin/students/${studentId}`, {
-          headers: {
-            'Authorization': `Bearer ${adminToken}`
-          }
+        const response = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
         });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch student data');
-        }
-
+        if (!response.ok) throw new Error('Failed to fetch student');
         const student = await response.json();
-
-        // Populate modal with student data
         document.getElementById('editStudentId').value = studentId;
         document.getElementById('editFullName').value = student.fullName;
         document.getElementById('editCollegeName').value = student.collegeName;
@@ -592,55 +923,28 @@
         document.getElementById('editSpecialization').value = student.specialization || '';
         document.getElementById('editMobileNumber').value = student.mobileNumber;
         document.getElementById('editEmailId').value = student.emailId;
-
-        // Show photo preview if available
-        if (student.photo) {
-          editPhotoPreview.innerHTML = `<img src="${student.photo}" class="photo-preview-img" alt="Student photo">`;
-        } else {
-          editPhotoPreview.innerHTML = '<p>No photo available</p>';
-        }
-
-        // Show modal
-        editModal.style.display = 'block';
+        editModal.classList.add('show');
       } catch (error) {
-        showStatus(dashboardStatus, 'Error: ' + error.message, true);
-        console.error('Error fetching student:', error);
+        showAlert(dashboardAlert, 'Error: ' + error.message, 'error');
       }
     }
 
-    // Save edited student
-    saveEditBtn.addEventListener('click', async () => {
-      const photoInput = document.getElementById('editPhoto');
-      const photoFile = photoInput.files[0];
+    function closeEditModal() {
+      editModal.classList.remove('show');
+    }
 
-      if (!photoFile) {
-        showStatus(dashboardStatus, 'Please upload a student photo.', true);
-        return;
-      }
-
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (!allowedTypes.includes(photoFile.type)) {
-        showStatus(dashboardStatus, 'Only JPG, PNG, or JPEG files are allowed.', true);
-        return;
-      }
-
+    async function saveEdit() {
+      const updatedData = {
+        fullName: document.getElementById('editFullName').value,
+        collegeName: document.getElementById('editCollegeName').value,
+        course: document.getElementById('editCourse').value,
+        currentYear: parseInt(document.getElementById('editCurrentYear').value),
+        specialization: document.getElementById('editSpecialization').value || null,
+        mobileNumber: document.getElementById('editMobileNumber').value,
+        emailId: document.getElementById('editEmailId').value
+      };
       try {
-        // Upload photo to Firebase Storage
-        const photoURL = await uploadPhoto(photoFile);
-
-        const updatedData = {
-          fullName: document.getElementById('editFullName').value,
-          collegeName: document.getElementById('editCollegeName').value,
-          course: document.getElementById('editCourse').value,
-          currentYear: parseInt(document.getElementById('editCurrentYear').value),
-          specialization: document.getElementById('editSpecialization').value || null,
-          mobileNumber: document.getElementById('editMobileNumber').value,
-          emailId: document.getElementById('editEmailId').value,
-          photo: photoURL
-        };
-
-        const response = await fetch(`https://hackthon-ujtu.onrender.com/api/admin/students/${currentEditId}`, {
+        const response = await fetch(`${backendUrl}/api/admin/students/${currentEditId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -648,94 +952,140 @@
           },
           body: JSON.stringify(updatedData)
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to update student');
-        }
-
-        showStatus(dashboardStatus, 'Student updated successfully!', false);
-        editModal.style.display = 'none';
+        if (!response.ok) throw new Error('Failed to update student');
+        showAlert(dashboardAlert, 'Student updated successfully!', 'success');
+        closeEditModal();
         fetchStudents();
       } catch (error) {
-        showStatus(dashboardStatus, 'Error: ' + error.message, true);
-        console.error('Update error:', error);
-      }
-    });
-
-    // Function to upload photo to Firebase Storage
-    async function uploadPhoto(file) {
-      const storageRef = storage.ref();
-      const photoRef = storageRef.child(`student_photos/${Date.now()}_${file.name}`);
-
-      try {
-        const snapshot = await photoRef.put(file);
-        const photoURL = await snapshot.ref.getDownloadURL();
-        return photoURL;
-      } catch (error) {
-        console.error('Error uploading photo:', error);
-        throw new Error('Failed to upload photo');
+        showAlert(dashboardAlert, 'Error: ' + error.message, 'error');
       }
     }
 
-    // Cancel edit
-    cancelEditBtn.addEventListener('click', () => {
-      editModal.style.display = 'none';
-    });
+    function openAssignModal(studentId) {
+      document.getElementById('assignStudentId').value = studentId;
+      assignModal.classList.add('show');
+    }
 
-    // Close modal when clicking X
-    closeModal.addEventListener('click', () => {
-      editModal.style.display = 'none';
-    });
+    function closeAssignModal() {
+      assignModal.classList.remove('show');
+    }
 
-    // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-      if (event.target === editModal) {
-        editModal.style.display = 'none';
-      }
-    });
+    async function assignCompany() {
+      const studentId = document.getElementById('assignStudentId').value;
+      const companyName = document.getElementById('companyName').value;
+      const sendEmail = document.getElementById('sendEmail').checked;
 
-    // Delete student
-    async function deleteStudent(studentId) {
-      if (!confirm('Are you sure you want to delete this student?')) {
+      if (!companyName) {
+        showAlert(dashboardAlert, 'Please select a company', 'error');
         return;
       }
 
+      showAlert(dashboardAlert, 'Assigning company...', 'success');
       try {
-        const response = await fetch(`https://hackthon-ujtu.onrender.com/api/admin/students/${studentId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${adminToken}`
-          }
+        const studentResponse = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
         });
+        if (!studentResponse.ok) throw new Error('Failed to fetch student');
+        const studentData = await studentResponse.json();
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to delete student');
+        const response = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({
+            ...studentData,
+            assignedCompany: companyName
+          })
+        });
+        if (!response.ok) throw new Error('Failed to assign company');
+
+        if (sendEmail) {
+          try {
+            await emailjs.send('service_5hlh3td', 'template_mqq7hac', {
+              to_name: studentData.fullName,
+              companyName: companyName,
+              email: studentData.emailId,
+              from_name: 'Yuva Bharat'
+            });
+            showAlert(dashboardAlert, 'Company assigned and email sent!', 'success');
+          } catch (error) {
+            showAlert(dashboardAlert, 'Company assigned, email failed', 'success');
+          }
+        } else {
+          showAlert(dashboardAlert, 'Company assigned successfully!', 'success');
         }
-
-        showStatus(dashboardStatus, 'Student deleted successfully!', false);
+        closeAssignModal();
         fetchStudents();
       } catch (error) {
-        showStatus(dashboardStatus, 'Error: ' + error.message, true);
-        console.error('Delete error:', error);
+        showAlert(dashboardAlert, 'Error: ' + error.message, 'error');
       }
     }
 
-    // Refresh button
-    refreshBtn.addEventListener('click', fetchStudents);
+    async function deleteStudent(studentId) {
+      if (!confirm('Delete this student permanently?')) return;
+      try {
+        const response = await fetch(`${backendUrl}/api/admin/students/${studentId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+        if (!response.ok) throw new Error('Failed to delete student');
+        showAlert(dashboardAlert, 'Student deleted successfully!', 'success');
+        fetchStudents();
+      } catch (error) {
+        showAlert(dashboardAlert, 'Error: ' + error.message, 'error');
+      }
+    }
 
-    // Logout function
-    window.logout = function() {
+    function logout() {
       auth.signOut().then(() => {
         adminToken = null;
-        loginContainer.style.display = 'block';
-        dashboardContainer.style.display = 'none';
-        showStatus(loginStatus, 'Logged out successfully', false);
+        dashboardWrapper.style.display = 'none';
+        loginWrapper.style.display = 'flex';
+        showAlert(loginAlert, 'Logged out successfully', 'success');
       }).catch((error) => {
-        showStatus(loginStatus, 'Logout failed: ' + error.message, true);
+        showAlert(loginAlert, 'Logout failed: ' + error.message, 'error');
       });
-    };
+    }
   </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
